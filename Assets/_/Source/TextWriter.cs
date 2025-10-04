@@ -2,10 +2,14 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class TextWriter : MonoBehaviour
 {
     public float charsPerSecond = 50f;
+    
+    [Space]
+    public UnityEvent onTypeCompleted;
 
     private TMP_Text _text;
     
@@ -33,6 +37,7 @@ public class TextWriter : MonoBehaviour
         if (_textCoroutine != null)
         {
             StopCoroutine(_textCoroutine);
+            _textCoroutine = null;
             HideAllVisibleChars();
         }
     }
@@ -48,6 +53,8 @@ public class TextWriter : MonoBehaviour
             _text.maxVisibleCharacters = visibleCount;
             yield return new WaitForSeconds(1f / charsPerSecond);
         }
+        
+        onTypeCompleted?.Invoke();
     }
 
     private void HideAllVisibleChars()
