@@ -5,20 +5,20 @@ using UnityEngine;
 public class CameraPhoneController : MonoBehaviour
 {
     [Header("Object References")]
-    public GameObject draggableObject; // Используем Transform для 2D
+    public GameObject draggableObject;
     public GameObject cameraPhonePhoto;
     public GameObject cameraPhone;
     
     [Header("Layer Settings")]
-    public LayerMask panoramaLayerMask; // Маска слоя для панорам
+    public LayerMask panoramaLayerMask;
     
     [Header("Raycast Settings")]
-    public float rayDistance = 100f; // Дальность луча
+    public float rayDistance = 100f;
     
     // Приватные переменные
     private GameObject hitPanorama;
     private Vector2 draggablePosition;
-    private RaycastHit2D hit; // Используем RaycastHit2D для 2D
+    private RaycastHit2D hit;
 
     void Update()
     {
@@ -35,18 +35,15 @@ public class CameraPhoneController : MonoBehaviour
     [ContextMenu("Take Photo")]
     public void TakePhoto()
     {
-        // Сохраняем позицию Draggable
         draggablePosition = draggableObject.transform.position;
         
-        // Создаем луч ИСПОЛЬЗУЯ Physics2D.Raycast
         hit = Physics2D.Raycast(
-            draggablePosition,    // Точка начала луча
-            Vector2.zero,         // Направление (можно изменить на нужное)
-            rayDistance,          // Дальность
-            panoramaLayerMask     // Маска слоя
+            draggablePosition, 
+            Vector2.zero,  
+            rayDistance,   
+            panoramaLayerMask 
         );
         
-        // Визуализация луча в Scene для отладки
         Debug.DrawRay(draggablePosition, Vector2.zero * rayDistance, Color.red, 2f);
         
         if (hit.collider != null)
@@ -66,11 +63,9 @@ public class CameraPhoneController : MonoBehaviour
             Debug.LogWarning("ShowPhoto: No panorama object saved. Take a photo first.");
             return;
         }
-
-        // Перемещаем фото в позицию Draggable на момент съемки
+        
         cameraPhonePhoto.transform.position = new Vector3(draggablePosition.x, draggablePosition.y, cameraPhonePhoto.transform.position.z);
         
-        // Делаем фото дочерним объектом целевой панорамы
         cameraPhonePhoto.transform.SetParent(hitPanorama.transform);
         
         
@@ -79,25 +74,25 @@ public class CameraPhoneController : MonoBehaviour
     [ContextMenu("Show Photo")]
     public void ShowPhoto()
     {
-        // Переключаем видимость
         cameraPhone.SetActive(false);
         cameraPhonePhoto.SetActive(true);
         
         Debug.Log($"Photo shown on {hitPanorama.name}");
     }
 
-    private IEnumerator CameraRoutine()
-    {
-        yield return null;
-    }
-
     [ContextMenu("Hide Photo")]
     public void HidePhoto()
     {
-        cameraPhonePhoto.transform.SetParent(null);
+        //cameraPhonePhoto.transform.SetParent(null); ??? Fixed bug
         cameraPhonePhoto.SetActive(false);
         cameraPhone.SetActive(true);
         
         Debug.Log("Photo hidden");
+    }
+
+    public void CamerasState(bool state)
+    {
+        cameraPhone.SetActive(state);
+        cameraPhonePhoto.SetActive(false); //??? Fixed bug
     }
 }
