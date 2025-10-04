@@ -1,13 +1,26 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class WaitingTimer : MonoBehaviour
 {
+    public bool RunFromStart = false;
+    public float RunFromStartSeconds = 0f;
+    
+    [Space]
     public UnityEvent OnTimerEnd;
 
     private Coroutine _currentTimerCoroutine;
-    
+
+    private void Start()
+    {
+        if (RunFromStart)
+        {
+            StartTimer(RunFromStartSeconds);
+        }
+    }
+
     public void StartTimer(float seconds)
     {
         _currentTimerCoroutine = StartCoroutine(TimerCoroutine(seconds));
