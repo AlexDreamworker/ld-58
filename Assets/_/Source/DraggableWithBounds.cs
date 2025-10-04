@@ -8,12 +8,13 @@ public class DraggableWithBounds : MonoBehaviour
     private float minX, maxX, minY, maxY;
     
     private SpriteRenderer spriteRenderer;
-    private Camera mainCamera;
+    // private Camera mainCamera;
+    public Camera mainCamera;
 
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        mainCamera = Camera.main;
+        // mainCamera = Camera.main;
         CalculateBounds();
     }
 

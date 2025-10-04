@@ -13,12 +13,13 @@ public class SmartPanorama : MonoBehaviour
     private int panoramaDirection = 0;
     
     private float spriteWidth;
-    private int childCount;
-    private Camera mainCamera;
+    public int childCount;
+    // private Camera mainCamera;
+    public Camera mainCamera;
 
     void Start()
     {
-        mainCamera = Camera.main;
+        // mainCamera = Camera.main;
         SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
         spriteWidth = sr.bounds.size.x;
         childCount = transform.childCount;
