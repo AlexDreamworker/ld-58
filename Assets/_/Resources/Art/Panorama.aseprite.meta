@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 40df3554892dd5a4588f5a0c414899b6
+guid: ab0e026bc437124468d7d5ab82b91c53
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -127,7 +127,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: PhoneHands
+  - name: Panorama
     originalName: 
     pivot: {x: 0.5, y: 0}
     alignment: 9
@@ -137,9 +137,9 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 480
-      height: 227
-    spriteID: 6b84550b8359f1b47b9ce646e83d3dff
+      width: 2462
+      height: 270
+    spriteID: f72cb84aa3812b14da4e33ff544e65ec
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -148,60 +148,30 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 4, y: 4}
-  - name: Frame_1
-    originalName: 
-    pivot: {x: 0.5, y: 0}
-    alignment: 9
-    border: {x: 0, y: 0, z: 0, w: 0}
-    customData: 
-    rect:
-      serializedVersion: 2
-      x: 4
-      y: 239
-      width: 480
-      height: 227
-    spriteID: 44d3326586021f441ad736f3fec46fc1
-    spriteBone: []
-    spriteOutline: []
-    vertices: []
-    spritePhysicsOutline: []
-    indices: 
-    edges: []
-    tessellationDetail: 0
-    uvTransform: {x: 4, y: 239}
   spriteSheetImportData: []
   tileSetImportData: []
   asepriteLayers:
   - layerIndex: 0
     uuid:
-      value0: 894768264
+      value0: 1407009979
       value1: 0
       value2: 0
       value3: 0
     guid: 0
-    name: PhoneHands
+    name: Panorama
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: Frame_0
+    - name: Panorama
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
         x: 0
         y: 0
-        width: 480
-        height: 227
-      spriteId: 6b84550b8359f1b47b9ce646e83d3dff
-    - name: Frame_1
-      frameIndex: 1
-      additiveSortOrder: 0
-      cellRect:
-        x: 0
-        y: 0
-        width: 480
-        height: 227
-      spriteId: 44d3326586021f441ad736f3fec46fc1
+        width: 2462
+        height: 270
+      spriteId: f72cb84aa3812b14da4e33ff544e65ec
     linkedCells: []
     tileCells: []
     tileSetIndex: 0
@@ -211,5 +181,5 @@ ScriptedImporter:
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 480, y: 270}
-  previousTextureSize: {x: 512, y: 512}
+  canvasSize: {x: 2462, y: 270}
+  previousTextureSize: {x: 4096, y: 512}
