@@ -1,4 +1,5 @@
 using UnityEngine;
+using DG.Tweening;
 
 public class SmartPanorama : MonoBehaviour
 {
@@ -34,6 +35,10 @@ public class SmartPanorama : MonoBehaviour
             ScrollPanorama();
             CheckForLoop();
         }
+    }
+    public void MoveToX(float duration)
+    {
+        transform.DOMoveX(200f, duration);
     }
 
     void CheckDragConditions()

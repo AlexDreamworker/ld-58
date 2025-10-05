@@ -19,7 +19,7 @@ TagManager:
   - PhoneCamera
   - Panorama
   - Draggable
-  - 
+  - Clock
   - 
   - 
   - 
@@ -41,6 +41,9 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Clock
+    uniqueID: 2218122975
     locked: 0
   m_RenderingLayers:
   - Default

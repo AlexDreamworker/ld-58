@@ -8,6 +8,9 @@ public class CameraPhoneController : MonoBehaviour
     public GameObject draggableObject;
     public GameObject cameraPhonePhoto;
     public GameObject cameraPhone;
+    public Camera _cameraPhone;
+    public Camera _cameraPhonePhoto;
+    public float _cameraZoomSize;
     
     [Header("Layer Settings")]
     public LayerMask panoramaLayerMask;
@@ -104,5 +107,17 @@ public class CameraPhoneController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.01f);
         cameraPhonePhoto.SetActive(false);
+    }
+
+    public void ZoomPlus()
+    {
+        _cameraPhone.orthographicSize = _cameraZoomSize;
+        _cameraPhonePhoto.orthographicSize = _cameraZoomSize;
+    }
+
+    public void ZoomMinus()
+    {
+        _cameraPhone.orthographicSize = 5f;
+        _cameraPhonePhoto.orthographicSize = 5f;
     }
 }

@@ -11,6 +11,8 @@ public class DraggableWithBounds : MonoBehaviour
     // private Camera mainCamera;
     public Camera mainCamera;
 
+    private bool _canDrag = true;
+
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -39,8 +41,16 @@ public class DraggableWithBounds : MonoBehaviour
         HandleMouseInput();
     }
 
+    public void SetCanDrag(bool canDrag)
+    {
+        _canDrag = canDrag;
+    }
+
     void HandleMouseInput()
     {
+        if (!_canDrag)
+            return;
+        
         if (Input.GetMouseButtonDown(0))
         {
             Vector3 mouseWorldPos = GetMouseWorldPosition();
