@@ -20,6 +20,8 @@ public class CameraPhoneController : MonoBehaviour
     private Vector2 draggablePosition;
     private RaycastHit2D hit;
 
+    private Coroutine _routine;
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Z))
@@ -76,6 +78,8 @@ public class CameraPhoneController : MonoBehaviour
     {
         cameraPhone.SetActive(false);
         cameraPhonePhoto.SetActive(true);
+
+        _routine = StartCoroutine(Routine());
         
         Debug.Log($"Photo shown on {hitPanorama.name}");
     }
@@ -94,5 +98,11 @@ public class CameraPhoneController : MonoBehaviour
     {
         cameraPhone.SetActive(state);
         cameraPhonePhoto.SetActive(false); //??? Fixed bug
+    }
+
+    private IEnumerator Routine()
+    {
+        yield return new WaitForSeconds(0.01f);
+        cameraPhonePhoto.SetActive(false);
     }
 }
