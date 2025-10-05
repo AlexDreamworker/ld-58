@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+public enum Zoom { X1, X2 }
+
 public class CameraPhoneController : MonoBehaviour
 {
     [Header("Object References")]
@@ -24,6 +26,9 @@ public class CameraPhoneController : MonoBehaviour
     private RaycastHit2D hit;
 
     private Coroutine _routine;
+
+    private Zoom _cameraPhoneZoom = Zoom.X1;
+    private Zoom _cameraPhonePhotoZoom = Zoom.X1;
 
     void Update()
     {
@@ -72,8 +77,8 @@ public class CameraPhoneController : MonoBehaviour
         cameraPhonePhoto.transform.position = new Vector3(draggablePosition.x, draggablePosition.y, cameraPhonePhoto.transform.position.z);
         
         cameraPhonePhoto.transform.SetParent(hitPanorama.transform);
-        
-        
+
+        _cameraPhonePhotoZoom = _cameraPhoneZoom;
     }
 
     [ContextMenu("Show Photo")]
@@ -83,6 +88,16 @@ public class CameraPhoneController : MonoBehaviour
         cameraPhonePhoto.SetActive(true);
 
         _routine = StartCoroutine(Routine());
+
+        if (_cameraPhonePhotoZoom == Zoom.X2)
+        {
+            _cameraPhonePhoto.orthographicSize = _cameraZoomSize;
+        }
+        
+        else if (_cameraPhonePhotoZoom == Zoom.X1)
+        {
+            _cameraPhonePhoto.orthographicSize = 5f;
+        }
         
         Debug.Log($"Photo shown on {hitPanorama.name}");
     }
@@ -112,12 +127,14 @@ public class CameraPhoneController : MonoBehaviour
     public void ZoomPlus()
     {
         _cameraPhone.orthographicSize = _cameraZoomSize;
-        _cameraPhonePhoto.orthographicSize = _cameraZoomSize;
+        _cameraPhoneZoom = Zoom.X2;
+        //_cameraPhonePhoto.orthographicSize = _cameraZoomSize;
     }
 
     public void ZoomMinus()
     {
         _cameraPhone.orthographicSize = 5f;
-        _cameraPhonePhoto.orthographicSize = 5f;
+        _cameraPhoneZoom = Zoom.X1;
+        //_cameraPhonePhoto.orthographicSize = 5f;
     }
 }
