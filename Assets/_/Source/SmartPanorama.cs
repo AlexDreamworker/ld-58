@@ -18,6 +18,8 @@ public class SmartPanorama : MonoBehaviour
     // private Camera mainCamera;
     public Camera mainCamera;
 
+    public bool _canScoll = true;
+
     void Start()
     {
         // mainCamera = Camera.main;
@@ -58,6 +60,13 @@ public class SmartPanorama : MonoBehaviour
         float screenWidth = screenRight - screenLeft;
         float leftActivationBorder = screenLeft + screenWidth * activationBorder;
         float rightActivationBorder = screenRight - screenWidth * activationBorder;
+
+        if (_canScoll == false)
+        {
+            panoramaDirection = 0;
+            return;
+        }
+            
         
         if (mousePos.x < leftActivationBorder)
         {
@@ -74,6 +83,11 @@ public class SmartPanorama : MonoBehaviour
             isPanoramaActive = false;
             panoramaDirection = 0;
         }
+    }
+
+    public void DisableScrolling()
+    {
+        _canScoll = false;
     }
 
     void ScrollPanorama()
