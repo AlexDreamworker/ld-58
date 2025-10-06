@@ -18,6 +18,10 @@ public class IntroTexts : MonoBehaviour
 
     [SerializeField] private List<IntroTextSequence> textSequences = new List<IntroTextSequence>();
     [SerializeField] private UnityEvent onAllSequencesCompleted;
+    
+    // НОВОЕ: Добавляем поле для звукового клика и AudioSource
+    [SerializeField] private AudioClip typingSound;
+    [SerializeField] private AudioSource audioSource;
 
     private TMP_Text tmpTextComponent;
     private Coroutine currentSequenceCoroutine;
@@ -25,6 +29,11 @@ public class IntroTexts : MonoBehaviour
     private void Awake()
     {
         tmpTextComponent = GetComponent<TMP_Text>();
+        // НОВОЕ: Если AudioSource не назначен в инспекторе, попробуем получить его с этого же GameObject
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
     }
 
     private void Start()
@@ -48,20 +57,11 @@ public class IntroTexts : MonoBehaviour
     {
         foreach (IntroTextSequence sequence in textSequences)
         {
-            // Печатаем текущий текст
             yield return StartCoroutine(TypeTextRoutine(sequence.text, sequence.typingSpeed));
-            
-            // Ждем указанное время после печати
             yield return new WaitForSeconds(sequence.delayAfterTyping);
-            
-            // Стираем текст
             tmpTextComponent.text = string.Empty;
-            
-            // Ждем перед переходом к следующему тексту
             yield return new WaitForSeconds(sequence.delayBeforeNext);
         }
-
-        // Все последовательности завершены
         onAllSequencesCompleted?.Invoke();
     }
 
@@ -73,7 +73,21 @@ public class IntroTexts : MonoBehaviour
         for (int i = 0; i < textToType.Length; i++)
         {
             tmpTextComponent.text += textToType[i];
+            
+            // НОВОЕ: Проигрываем звук на каждом шаге цикла
+            PlayTypingSound();
+            
             yield return new WaitForSeconds(delayBetweenChars);
+        }
+    }
+
+    // НОВОЕ: Метод для воспроизведения звука
+    private void PlayTypingSound()
+    {
+        // Проверяем, что у нас есть звук и источник звука
+        if (typingSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(typingSound);
         }
     }
 
