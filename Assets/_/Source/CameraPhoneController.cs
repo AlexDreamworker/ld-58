@@ -10,9 +10,11 @@ public class CameraPhoneController : MonoBehaviour
     public GameObject draggableObject;
     public GameObject cameraPhonePhoto;
     public GameObject cameraPhone;
+    public Camera _cameraMain;
     public Camera _cameraPhone;
     public Camera _cameraPhonePhoto;
     public float _cameraZoomSize;
+    public GameObject _atomicBomb;
     
     [Header("Layer Settings")]
     public LayerMask panoramaLayerMask;
@@ -136,5 +138,43 @@ public class CameraPhoneController : MonoBehaviour
         _cameraPhone.orthographicSize = 5f;
         _cameraPhoneZoom = Zoom.X1;
         //_cameraPhonePhoto.orthographicSize = 5f;
+    }
+
+    [ContextMenu("ShowAtomicBomb")]
+    public void ShowAtomicBomb()
+    {
+        var mainCameraPosition = _cameraMain.transform.position;
+        
+        hit = Physics2D.Raycast(
+            mainCameraPosition, 
+            Vector2.zero,  
+            rayDistance,   
+            panoramaLayerMask 
+        );
+        
+        Debug.DrawRay(mainCameraPosition, Vector2.zero * rayDistance, Color.red, 2f);
+        
+        if (hit.collider != null)
+        {
+            hitPanorama = hit.collider.gameObject;
+            Debug.Log($"Hit: {hitPanorama.name}");
+        }
+        else
+        {
+            Debug.Log("Ray didn't hit any panorama objects.");
+            Debug.DrawRay(mainCameraPosition, Vector2.zero * rayDistance, Color.blue, 2f);
+        }
+        
+        if (hitPanorama == null)
+        {
+            Debug.LogWarning("No panorama object saved.");
+            return;
+        }
+        
+        _atomicBomb.transform.position = new Vector3(mainCameraPosition.x + 2f, _atomicBomb.transform.position.y, _atomicBomb.transform.position.z);
+        
+        _atomicBomb.transform.SetParent(hitPanorama.transform);
+        
+        _atomicBomb.SetActive(true);
     }
 }
