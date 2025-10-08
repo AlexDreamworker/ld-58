@@ -7,7 +7,7 @@ public class SmartPanorama : MonoBehaviour
     public DraggableWithBounds draggableSprite;
     
     [Header("Settings")]
-    public float activationBorder = 0.1f;
+    public float activationBorder = 50f;
     public float panoramaSpeed = 2f;
 
     private bool isPanoramaActive = false;
@@ -15,14 +15,12 @@ public class SmartPanorama : MonoBehaviour
     
     private float spriteWidth;
     public int childCount;
-    // private Camera mainCamera;
     public Camera mainCamera;
 
     public bool _canScoll = true;
 
     void Start()
     {
-        // mainCamera = Camera.main;
         SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
         spriteWidth = sr.bounds.size.x;
         childCount = transform.childCount;
@@ -38,10 +36,6 @@ public class SmartPanorama : MonoBehaviour
             CheckForLoop();
         }
     }
-    public void MoveToX(float duration)
-    {
-        transform.DOMoveX(200f, duration);
-    }
 
     void CheckDragConditions()
     {
@@ -51,15 +45,20 @@ public class SmartPanorama : MonoBehaviour
             panoramaDirection = 0;
             return;
         }
+
+        if (draggableSprite.IsDragging == false)
+            return;
         
-        Vector3 mousePos = GetMouseWorldPosition();
+        Vector3 spritePos = draggableSprite.transform.position;
         
+        // Получаем границы экрана в мировых координатах
         float screenLeft = mainCamera.ViewportToWorldPoint(new Vector3(0, 0, 0)).x;
         float screenRight = mainCamera.ViewportToWorldPoint(new Vector3(1, 0, 0)).x;
         
-        float screenWidth = screenRight - screenLeft;
-        float leftActivationBorder = screenLeft + screenWidth * activationBorder;
-        float rightActivationBorder = screenRight - screenWidth * activationBorder;
+        // Получаем границы спрайта
+        Bounds spriteBounds = draggableSprite.GetSpriteBounds();
+        float spriteLeft = spritePos.x - spriteBounds.extents.x;
+        float spriteRight = spritePos.x + spriteBounds.extents.x;
 
         if (_canScoll == false)
         {
@@ -67,16 +66,16 @@ public class SmartPanorama : MonoBehaviour
             return;
         }
             
-        
-        if (mousePos.x < leftActivationBorder)
+        // Проверяем, достиг ли спрайт границ экрана
+        if (spriteLeft <= screenLeft)
         {
             isPanoramaActive = true;
-            panoramaDirection = 1;
+            panoramaDirection = 1; // Двигаем панораму вправо
         }
-        else if (mousePos.x > rightActivationBorder)
+        else if (spriteRight >= screenRight)
         {
             isPanoramaActive = true;
-            panoramaDirection = -1;
+            panoramaDirection = -1; // Двигаем панораму влево
         }
         else
         {
@@ -115,12 +114,5 @@ public class SmartPanorama : MonoBehaviour
                 child.Translate(Vector3.left * (childCount * spriteWidth));
             }
         }
-    }
-
-    Vector3 GetMouseWorldPosition()
-    {
-        Vector3 mousePos = Input.mousePosition;
-        mousePos.z = -mainCamera.transform.position.z;
-        return mainCamera.ScreenToWorldPoint(mousePos);
     }
 }

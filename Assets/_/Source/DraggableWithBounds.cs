@@ -8,15 +8,21 @@ public class DraggableWithBounds : MonoBehaviour
     private float minX, maxX, minY, maxY;
     
     private SpriteRenderer spriteRenderer;
-    // private Camera mainCamera;
     public Camera mainCamera;
 
     private bool _canDrag = true;
+    
+    [Header("Border Offset Settings")]
+    public Vector2 horizontalOffset = Vector2.zero; // x = left, y = right
+    public Vector2 verticalOffset = Vector2.zero;   // x = bottom, y = top
+
+    [Space] public bool cursorModification = true;
+    
+    public bool IsDragging => isDragging;
 
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        // mainCamera = Camera.main;
         CalculateBounds();
     }
 
@@ -24,16 +30,33 @@ public class DraggableWithBounds : MonoBehaviour
     {
         if (spriteRenderer == null || mainCamera == null) return;
         
-        float spriteWidth = spriteRenderer.bounds.size.x;
-        float spriteHeight = spriteRenderer.bounds.size.y;
+        // Получаем размеры спрайта
+        Bounds spriteBounds = spriteRenderer.bounds;
+        float spriteHalfWidth = spriteBounds.extents.x;
+        float spriteHalfHeight = spriteBounds.extents.y;
         
-        float cameraHeight = 2f * mainCamera.orthographicSize;
-        float cameraWidth = cameraHeight * mainCamera.aspect;
+        // Получаем границы камеры в мировых координатах
+        float cameraBottom = mainCamera.ViewportToWorldPoint(new Vector3(0, 0, 0)).y;
+        float cameraTop = mainCamera.ViewportToWorldPoint(new Vector3(0, 1, 0)).y;
+        float cameraLeft = mainCamera.ViewportToWorldPoint(new Vector3(0, 0, 0)).x;
+        float cameraRight = mainCamera.ViewportToWorldPoint(new Vector3(1, 0, 0)).x;
         
-        minX = mainCamera.transform.position.x - cameraWidth / 2 + spriteWidth / 2;
-        maxX = mainCamera.transform.position.x + cameraWidth / 2 - spriteWidth / 2;
-        minY = mainCamera.transform.position.y - cameraHeight / 2 + spriteHeight / 2;
-        maxY = mainCamera.transform.position.y + cameraHeight / 2 - spriteHeight / 2;
+        // Рассчитываем границы с учетом отступов
+        // Для горизонтали: левая граница = левый край экрана + половина ширины спрайта + левый отступ
+        //                  правая граница = правый край экрана - половина ширины спрайта - правый отступ
+        minX = cameraLeft + spriteHalfWidth + horizontalOffset.x;
+        maxX = cameraRight - spriteHalfWidth - horizontalOffset.y;
+        
+        // Для вертикали: нижняя граница = нижний край экрана + половина высоты спрайта + нижний отступ
+        //                верхняя граница = верхний край экрана - половина высоты спрайта - верхний отступ
+        minY = cameraBottom + spriteHalfHeight + verticalOffset.x;
+        maxY = cameraTop - spriteHalfHeight - verticalOffset.y;
+        
+        // Debug-логи для проверки границ
+        Debug.Log($"Camera - Left: {cameraLeft}, Right: {cameraRight}, Bottom: {cameraBottom}, Top: {cameraTop}");
+        Debug.Log($"Sprite - HalfWidth: {spriteHalfWidth}, HalfHeight: {spriteHalfHeight}");
+        Debug.Log($"Bounds - minX: {minX}, maxX: {maxX}, minY: {minY}, maxY: {maxY}");
+        Debug.Log($"Offsets - Horizontal: {horizontalOffset}, Vertical: {verticalOffset}");
     }
 
     void Update()
@@ -59,12 +82,23 @@ public class DraggableWithBounds : MonoBehaviour
             {
                 isDragging = true;
                 dragOffset = transform.position - mouseWorldPos;
+
+                if (cursorModification)
+                {
+                    Cursor.visible = false;
+                }
+                    
             }
         }
         
         if (Input.GetMouseButtonUp(0))
         {
             isDragging = false;
+            
+            if (cursorModification)
+            {
+                Cursor.visible = true;
+            }
         }
         
         if (isDragging)
@@ -74,8 +108,17 @@ public class DraggableWithBounds : MonoBehaviour
             targetPosition.x = Mathf.Clamp(targetPosition.x, minX, maxX);
             targetPosition.y = Mathf.Clamp(targetPosition.y, minY, maxY);
             
-            transform.position = targetPosition;
+            //transform.position = targetPosition;
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
         }
+    }
+
+    [Header("Movement Settings")]
+    public float moveSpeed = 10f;
+    
+    public Bounds GetSpriteBounds()
+    {
+        return spriteRenderer.bounds;
     }
 
     Vector3 GetMouseWorldPosition()
@@ -90,4 +133,19 @@ public class DraggableWithBounds : MonoBehaviour
         CalculateBounds();
     }
     
+    // Добавляем метод для принудительного пересчета границ при изменении offset
+    public void UpdateBounds()
+    {
+        CalculateBounds();
+    }
+    
+    // Метод для визуализации границ в редакторе
+    void OnDrawGizmosSelected()
+    {
+        if (!Application.isPlaying) return;
+        
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(new Vector3((minX + maxX) / 2, (minY + maxY) / 2, 0), 
+                           new Vector3(maxX - minX, maxY - minY, 0));
+    }
 }
